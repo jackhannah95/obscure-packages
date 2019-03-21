@@ -26,6 +26,7 @@ table_contents <- data.frame(c("Text", "Text",
                              c(1:5))
 ```
 
+
 ## tidylog
 
 - [tidylog](https://github.com/elbersb/tidylog) provides wrappers around basic 
@@ -41,6 +42,7 @@ library(dplyr)
 library(tidylog)
 ```
 
+
 ## tidylog::filter()
 
 ```{r, echo = TRUE, results = "hold"}
@@ -48,6 +50,7 @@ copd <- tibble(chi_number = c(1, 2, 3, 4),
                main_condition = c("J430", "R268", "J404", "J449"))
 copd
 ```
+
 
 ## tidylog::filter()
 
@@ -67,6 +70,7 @@ p <- copd %>%
 readr::write_csv(copd, here::here("data", "copd.csv"))
 ```
 
+
 ## here
 
 - If you ever start an R script with setwd() or rm(list = ls()) - stop
@@ -81,6 +85,7 @@ library(here)
 getwd()
 ```
 
+
 ## here::here()
 
 ```{r results = "hold"}
@@ -89,10 +94,41 @@ readr::read_csv(here("data", "copd.csv"))
 ```
 
 
-## Slide title
+## janitor
 
-```{r, echo = FALSE}
-    kable(table_contents,
-          col.names = c("Column heading", "Column heading"),
-          format = "markdown")
+- [janitor](https://github.com/sfirke/janitor) provides a multitude of functions 
+for 'cleaning' data
+
+- It's specifically designed with beginner and intermediate R users in mind
+
+- While not part of the tidyverse, it's designed to work well with pipes
+
+```{r, echo = FALSE, fig.align = 'center'}
+include_graphics("images/janitor_logo.png")
 ```
+
+
+## janitor::clean_names()
+
+```{r, echo = TRUE, results = "hold"}
+names <- tibble(VAR_ONE = "ALL CAPS",
+                var.two = "dot",
+                VarThree = "No space",
+                `Var four` = "Space",
+                `% Var` = "symbol")
+names
+```
+
+
+## janitor::clean_names()
+
+```{r, echo = TRUE, results = "hold"}
+names <- tibble(VAR_ONE = "ALL CAPS",
+                var.two = "dot",
+                VarThree = "No space",
+                `Var four` = "Space",
+                `% Var` = "symbol")
+names %>%
+  janitor::clean_names()
+```
+
