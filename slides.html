@@ -127,16 +127,30 @@ copd</pre>
 </article></slide><slide class=""><hgroup><h2>tidylog::filter()</h2></hgroup><article  id="tidylogfilter-1">
 
 <pre class = 'prettyprint lang-r'>copd &lt;- tibble(chi_number = c(1, 2, 3, 4),
-            main_condition = c(&quot;J430&quot;, &quot;R268&quot;, &quot;J404&quot;, &quot;J449&quot;))
+               main_condition = c(&quot;J430&quot;, &quot;R268&quot;, &quot;J404&quot;, &quot;J449&quot;))
 
 # Select cases with COPD diagnosis (J40 - J44)
 p &lt;- copd %&gt;%
-  filter(substr(main_condition, 1, 1) == &quot;j&quot; &amp;
-           between(as.numeric(substr(main_condition, 2, 3)), 40, 44))</pre>
+  tidylog::filter(substr(main_condition, 1, 1) == &quot;j&quot; &amp;
+                    between(as.numeric(substr(main_condition, 2, 3)), 
+                            40, 44))</pre>
 
 <pre >## filter: removed all rows (100%)</pre>
 
 <pre class = 'prettyprint lang-r'># No rows selected - check code for error</pre>
+
+</article></slide><slide class=""><hgroup><h2>tidylog::filter()</h2></hgroup><article  id="tidylogfilter-2">
+
+<pre class = 'prettyprint lang-r'>copd &lt;- tibble(chi_number = c(1, 2, 3, 4),
+               main_condition = c(&quot;J430&quot;, &quot;R268&quot;, &quot;J404&quot;, &quot;J449&quot;))
+
+# Select cases with COPD diagnosis (J40 - J44)
+p &lt;- copd %&gt;%
+  tidylog::filter(substr(main_condition, 1, 1) == &quot;J&quot; &amp;
+                    between(as.numeric(substr(main_condition, 2, 3)), 
+                            40, 44))</pre>
+
+<pre >## filter: removed 1 out of 4 rows (25%)</pre>
 
 </article></slide><slide class=""><hgroup><h2>here</h2></hgroup><article  id="here">
 
@@ -156,7 +170,7 @@ p &lt;- copd %&gt;%
 
 </article></slide><slide class=""><hgroup><h2>here::here()</h2></hgroup><article  id="herehere">
 
-<pre class = 'prettyprint lang-r'># Load earlier dataset copd - saved in &quot;data&quot; sub-folder
+<pre class = 'prettyprint lang-r'># Load earlier dataset copd - saved in &#39;data&#39; sub-folder
 readr::read_csv(here(&quot;data&quot;, &quot;copd.csv&quot;))</pre>
 
 <pre >## Parsed with column specification:
@@ -185,17 +199,17 @@ readr::read_csv(here(&quot;data&quot;, &quot;copd.csv&quot;))</pre>
 
 </article></slide><slide class=""><hgroup><h2>janitor::clean_names()</h2></hgroup><article  id="janitorclean_names">
 
-<pre class = 'prettyprint lang-r'>names &lt;- tibble(VARIABLE_ONE = &quot;ALL CAPS&quot;,
-                variable.two = &quot;dot&quot;,
-                VariableThree = &quot;No space&quot;,
-                `Variable four` = &quot;Space&quot;,
-                `% Variable` = &quot;symbol&quot;)
+<pre class = 'prettyprint lang-r'>names &lt;- tibble(VAR_ONE = &quot;ALL CAPS&quot;,
+                var.two = &quot;dot&quot;,
+                VarThree = &quot;No space&quot;,
+                `Var four` = &quot;Space&quot;,
+                `% Var` = &quot;symbol&quot;)
 names</pre>
 
 <pre >## # A tibble: 1 x 5
-##   VARIABLE_ONE variable.two VariableThree `Variable four` `% Variable`
-##   &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;           &lt;chr&gt;       
-## 1 ALL CAPS     dot          No space      Space           symbol</pre>
+##   VAR_ONE  var.two VarThree `Var four` `% Var`
+##   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;  
+## 1 ALL CAPS dot     No space Space      symbol</pre>
 
 </article></slide><slide class=""><hgroup><h2>janitor::clean_names()</h2></hgroup><article  id="janitorclean_names-1">
 
@@ -210,7 +224,68 @@ names %&gt;%
 <pre >## # A tibble: 1 x 5
 ##   var_one  var_two var_three var_four percent_var
 ##   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;      
-## 1 ALL CAPS dot     No space  Space    symbol</pre></article></slide>
+## 1 ALL CAPS dot     No space  Space    symbol</pre>
+
+</article></slide><slide class=""><hgroup><h2>fuzzyjoin</h2></hgroup><article  id="fuzzyjoin">
+
+<ul>
+<li><p>You&#39;re probably familiar with dplyr&#39;s join operators (left_join, full_join, anti_join, etc.)</p></li>
+<li><p><a href='https://github.com/dgrtwo/fuzzyjoin' title=''>fuzzyjoin</a> provides similar operators - the difference being they allow inexact matching</p></li>
+<li><p>For example, dplyr::left_join(x, y, by = &quot;p&quot;) adds variables from y to x for observations which have the same value of p in both datasets</p></li>
+<li><p>fuzzyjoin::fuzzy_left_join(x, y, by = &quot;p&quot;, match.fun = <code>`&gt;`</code>) adds<br/>variables from y to x for observations which have a greater value of p in x than in y</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>fuzzyjoin::fuzzy_left_join()</h2></hgroup><article  id="fuzzyjoinfuzzy_left_join">
+
+<pre class = 'prettyprint lang-r'># Use same copd data as before
+copd &lt;- tibble(chi_number = c(1, 2, 3, 4),
+               main_condition = c(&quot;J430&quot;, &quot;R268&quot;, &quot;J404&quot;, &quot;J449&quot;))
+
+# Define loopkup file
+lookup &lt;- tibble(code = c(&quot;J40&quot;, &quot;J410&quot;, &quot;J42&quot;, &quot;J43&quot;, &quot;J449&quot;),
+                 value = c(1, 2, 3, 4, 5))
+lookup</pre>
+
+<pre >## # A tibble: 5 x 2
+##   code  value
+##   &lt;chr&gt; &lt;dbl&gt;
+## 1 J40       1
+## 2 J410      2
+## 3 J42       3
+## 4 J43       4
+## 5 J449      5</pre>
+
+</article></slide><slide class=""><hgroup><h2>fuzzyjoin::fuzzy_left_join()</h2></hgroup><article  id="fuzzyjoinfuzzy_left_join-1">
+
+<ul>
+<li><p>Suppose you want to add the &#39;value&#39; variable from the lookup to the copd data for cases when the lookup code matches a substring of a patient&#39;s ICD10 code</p></li>
+<li><p>Using dplyr::left_join() would likely necessitate an arduous process of creating new substring variables in each dataset, doing two joins, then combining variables</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>fuzzyjoin::fuzzy_left_join()</h2></hgroup><article  id="fuzzyjoinfuzzy_left_join-2">
+
+<p>Using fuzzyjoin::fuzzy_left_join and stringr::str_detect():</p>
+
+<pre class = 'prettyprint lang-r'>copd %&gt;%
+  fuzzyjoin::fuzzy_left_join(lookup, 
+                             by = c(&quot;main_condition&quot; = &quot;code&quot;),
+                             match_fun = stringr::str_detect)</pre>
+
+<pre >## # A tibble: 4 x 4
+##   chi_number main_condition code  value
+##        &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; &lt;dbl&gt;
+## 1          1 J430           J43       4
+## 2          2 R268           &lt;NA&gt;     NA
+## 3          3 J404           J40       1
+## 4          4 J449           J449      5</pre>
+
+</article></slide><slide class=""><hgroup><h2>Links</h2></hgroup><article  id="links">
+
+<p>Email: <a href='mailto:jack.hannah1@nhs.net' title=''>jack.hannah1@nhs.net</a></p>
+
+<p><a href='https://github.com/jackhannah95/obscure-packages' title=''>Code and data used to make these slides</a></p>
+
+<p><a href='https://github.com/NHS-NSS-transforming-publications' title=''>Transforming Publishing on GitHub</a></p></article></slide>
 
 
   <slide class="backdrop"></slide>
