@@ -1,8 +1,8 @@
 ---
-title: "Presentation title"
-subtitle: "Presentation subtitle"
-author: 'Name <br> Organisation <br>'
-date: "Date <br><br> Slides: url to slides"
+title: "Obscure Packages"
+subtitle: "PHI useR Group"
+author: 'Jack Hannah <br> Transforming Publishing Programme <br>'
+date: "26 March 2019 <br><br> Slides: https://github.com/jackhannah95/obscure-packages/"
 output:
   ioslides_presentation:
     css: my-theme.css
@@ -11,10 +11,13 @@ output:
 ```{r setup, include = FALSE}
 # Load packages required
 library(knitr)
+library(dplyr)
+library(tidylog)
 library(magrittr)
-library(kableExtra)
 
-knitr::opts_chunk$set(echo = FALSE)
+#knitr::opts_chunk$set(echo = FALSE)
+
+
 
 # Create data frame for table
 table_contents <- data.frame(c("Text", "Text",
@@ -23,21 +26,68 @@ table_contents <- data.frame(c("Text", "Text",
                              c(1:5))
 ```
 
-## Slide title
+## tidylog
 
-- Bullet point
-- Bullet point with *italic text*
-- Bullet point with **bold text**
+- [tidylog](https://github.com/elbersb/tidylog) provides wrappers around basic 
+[dplyr](https://github.com/tidyverse/dplyr) functions
 
-## Slide title
+- These wrapper functions print a message in the console to describe the result 
+of applying the corresponding dplyr function
 
-```{r out.width = "70%", fig.align = 'center'}
-include_graphics("images/value.png")
+- To use, just load tidylog after dplyr:
+
+```{r eval = FALSE, results = "hide"}
+library(dplyr)
+library(tidylog)
 ```
 
-## Slide title
+## tidylog::filter()
 
-[ISD homepage](http://www.isdscotland.org/)
+```{r, echo = TRUE, results = "hold"}
+copd <- tibble(chi_number = c(1, 2, 3, 4),
+               main_condition = c("J430", "R268", "J404", "J449"))
+copd
+```
+
+## tidylog::filter()
+
+```{r, echo = TRUE, results = "hold"}
+copd <- tibble(chi_number = c(1, 2, 3, 4),
+            main_condition = c("J430", "R268", "J404", "J449"))
+
+# Select cases with COPD diagnosis (J40 - J44)
+p <- copd %>%
+  filter(substr(main_condition, 1, 1) == "j" &
+           between(as.numeric(substr(main_condition, 2, 3)), 40, 44))
+
+# No rows selected - check code for error
+```
+
+```{r, echo = FALSE}
+readr::write_csv(copd, here::here("data", "copd.csv"))
+```
+
+## here
+
+- If you ever start an R script with setwd() or rm(list = ls()) - stop
+
+- Instead, use [here](https://github.com/r-lib/here) and [RStudio Projects](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects)
+
+- Projects automatically set your working directory and here allows you to 
+define filepaths relatively to it
+
+```{r results = "hold"}
+library(here)
+getwd()
+```
+
+## here::here()
+
+```{r results = "hold"}
+# Load earlier dataset copd - saved in "data" sub-folder
+readr::read_csv(here("data", "copd.csv"))
+```
+
 
 ## Slide title
 
