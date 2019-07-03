@@ -51,13 +51,11 @@ df <- tibble::tibble(chi_number = c(1, 2, 3, 4),
 
 # Select cases with COPD diagnosis (J40 - J44)
 copd <- df %>%
-  tidylog::filter(substr(main_condition, 1, 1) == "j" &
-                    dplyr::between(as.numeric(
-                      substr(main_condition, 2, 3)), 
-                      40, 44))
+  tidylog::filter(grepl("^j4[0-4]", main_condition))
+
+# No rows selected - check code for error
 ```
 
-No rows selected - check code for error
 
 ## tidylog::filter()
 
@@ -68,10 +66,7 @@ df <- tibble::tibble(chi_number = c(1, 2, 3, 4),
 
 # Select cases with COPD diagnosis (J40 - J44)
 copd <- df %>%
-  tidylog::filter(substr(main_condition, 1, 1) == "J" &
-                    dplyr::between(as.numeric(
-                      substr(main_condition, 2, 3)), 
-                      40, 44))
+  tidylog::filter(grepl("^J4[0-4]", main_condition))
 ```
 
 

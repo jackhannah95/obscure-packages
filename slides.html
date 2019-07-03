@@ -140,14 +140,11 @@ df</pre>
 
 # Select cases with COPD diagnosis (J40 - J44)
 copd &lt;- df %&gt;%
-  tidylog::filter(substr(main_condition, 1, 1) == &quot;j&quot; &amp;
-                    dplyr::between(as.numeric(
-                      substr(main_condition, 2, 3)), 
-                      40, 44))</pre>
+  tidylog::filter(grepl(&quot;^j4[0-4]&quot;, main_condition))</pre>
 
 <pre >## filter: removed all rows (100%)</pre>
 
-<p>No rows selected - check code for error</p>
+<pre class = 'prettyprint lang-r'># No rows selected - check code for error</pre>
 
 </article></slide><slide class=""><hgroup><h2>tidylog::filter()</h2></hgroup><article  id="tidylogfilter-2">
 
@@ -157,10 +154,7 @@ copd &lt;- df %&gt;%
 
 # Select cases with COPD diagnosis (J40 - J44)
 copd &lt;- df %&gt;%
-  tidylog::filter(substr(main_condition, 1, 1) == &quot;J&quot; &amp;
-                    dplyr::between(as.numeric(
-                      substr(main_condition, 2, 3)), 
-                      40, 44))</pre>
+  tidylog::filter(grepl(&quot;^J4[0-4]&quot;, main_condition))</pre>
 
 <pre >## filter: removed 1 out of 4 rows (25%)</pre>
 
